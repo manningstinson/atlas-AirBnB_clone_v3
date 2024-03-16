@@ -1,13 +1,5 @@
-api/__init__.py, 
-
-api/v1/views/__init__.py, 
-api/v1/views/index.py, 
-
-
-api/v1/__init__.py,
-api/v1/app.py
-api/v1/views 
-
-api/v1/views/states.py, api/v1/views/__init__.py
-
-api/v1/views/cities.py, api/v1/views/__init__.py
+- api/__init__.py
+- api/v1/__init__.py
+ api/v1/views/__init__.py
+ api/v1/views/index.py, 
+ api/v1/app.py
