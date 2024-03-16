@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""app.py: Module to configure and run the Flask application for the API"""
+"""Module to configure and run the Flask application for the API."""
 
 import os
 from models import storage
@@ -13,14 +13,15 @@ cors = CORS(app, resources={"/*": {"origins": "0.0.0.0"}})
 
 @app.teardown_appcontext
 def teardown_appcontext(error):
-    """Teardown app context: Closes the database connection"""
+    """Closes the database connection."""
     storage.close()
 
 @app.errorhandler(404)
-def page_not_found(error):
-    """Error handler for 404 Not Found"""
+def handle_404_error(error):
+    """Handles 404 Not Found errors."""
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == "__main__":
+    # Run the Flask application
     app.run(host=os.getenv('HBNB_API_HOST', '0.0.0.0'),
             port=int(os.getenv('HBNB_API_PORT', '5000')))

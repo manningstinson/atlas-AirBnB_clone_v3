@@ -1,11 +1,12 @@
 #!/usr/bin/python3
-"""index.py to connect to API"""
-from api.v1.views import app_views
-from flask import Flask, Blueprint, jsonify
+"""Routes for handling status and statistics requests for the API."""
+
+from flask import jsonify
 from models import storage
+from . import app_views
 
-
-hbnbText = {
+# Configuration for statistics
+HBNB_TEXT = {
     "amenities": "Amenity",
     "cities": "City",
     "places": "Place",
@@ -15,19 +16,16 @@ hbnbText = {
 }
 
 
-@app_views.route('/status', strict_slashes=False)
-def hbnbStatus():
-    """hbnbStatus"""
+@app_views.route('/status', methods=['GET'], strict_slashes=False)
+def hbnb_status():
+    """Returns the status of the API."""
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats', strict_slashes=False)
-def hbnbStats():
-    """hbnbStats"""
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
+def hbnb_stats():
+    """Returns statistics about the number of objects in the storage."""
     return_dict = {}
-    for key, value in hbnbText.items():
+    for key, value in HBNB_TEXT.items():
         return_dict[key] = storage.count(value)
     return jsonify(return_dict)
-
-if __name__ == "__main__":
-    pass
