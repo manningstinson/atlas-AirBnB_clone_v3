@@ -1,9 +1,8 @@
 #!/usr/bin/python3
-""" console """
+"""Console"""
 
 import cmd
-from datetime import datetime
-import models
+import shlex
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -11,14 +10,14 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-import shlex  # for splitting the line along spaces except in double quotes
+import models
 
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
 
 class HBNBCommand(cmd.Cmd):
-    """ HBNH console """
+    """HBNH console"""
     prompt = '(hbnb) '
 
     def do_EOF(self, arg):
@@ -26,7 +25,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def emptyline(self):
-        """ overwriting the emptyline method """
+        """Overwriting the emptyline method"""
         return False
 
     def do_quit(self, arg):
@@ -34,7 +33,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def _key_value_parser(self, args):
-        """creates a dictionary from a list of strings"""
+        """Creates a dictionary from a list of strings"""
         new_dict = {}
         for arg in args:
             if "=" in arg:
@@ -159,6 +158,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
