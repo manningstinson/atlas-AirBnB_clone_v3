@@ -21,8 +21,7 @@ classes = {"Amenity": Amenity, "City": City,
 
 
 class DBStorage:
-    """Interacts with the MySQL database"""
-
+    """interaacts with the MySQL database"""
     __engine = None
     __session = None
 
@@ -42,69 +41,51 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Query on the current database session"""
+        """query on the current database session"""
         new_dict = {}
-        if cls:
-            query_result = self.__session.query(classes[cls]).all()
-        else:
-            query_result = []
-            for clss in classes.values():
-                query_result.extend(self.__session.query(clss).all())
-        for obj in query_result:
-            key = "{}.{}".format(obj.__class__.__name__, obj.id)
-            new_dict[key] = obj
-        return new_dict
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    new_dict[key] = obj
+        return (new_dict)
 
     def new(self, obj):
-        """Add the object to the current database session"""
+        """add the object to the current database session"""
         self.__session.add(obj)
 
     def save(self):
-        """Commit all changes of the current database session"""
+        """commit all changes of the current database session"""
         self.__session.commit()
 
     def delete(self, obj=None):
-        """Delete from the current database session obj if not None"""
-        if obj:
+        """delete from the current database session obj if not None"""
+        if obj is not None:
             self.__session.delete(obj)
 
     def reload(self):
-        """Reloads data from the database"""
+        """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
-        self.__session = Session()
+        self.__session = Session
 
     def close(self):
-        """Call remove() method on the private session attribute"""
+        """call remove() method on the private session attribute"""
         self.__session.remove()
 
     def get(self, cls, id):
-        """
-        Retrieves one object by its ID.
-        Args:
-            cls: Class
-            id: string representing the object ID
-        Returns:
-            The object based on the class and its ID, or None if not found
-        """
+        '''method to retrieve one object'''
         if cls and id:
-            return self.__session.query(classes[cls]).filter_by(id=id).first()
-        return None
+            tempo = cls, __name__ + "." + id
+            count = self.all(cls)
+            for key in count:
+                if key == tempo:
+                    return count[key]
+        else:
+            return None
 
     def count(self, cls=None):
-        """
-        Count the number of objects in storage.
-        Args:
-            cls: Class (optional)
-        Returns:
-            The number of objects in storage matching the given class.
-            If no class is passed, returns the count of all objects in storage.
-        """
-        if cls:
-            return self.__session.query(classes[cls]).count()
-        else:
-            total_count = 0
-            for clss in classes.values():
-                total_count += self.__session.query(clss).count()
-            return total_count
+        '''class (optional)'''
+        return (len(self.all(cls)))
