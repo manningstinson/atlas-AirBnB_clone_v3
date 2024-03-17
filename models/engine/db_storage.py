@@ -44,13 +44,16 @@ class DBStorage:
     def all(self, cls=None):
         """Query on the current database session"""
         new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
-        return (new_dict)
+        if cls:
+            query_result = self.__session.query(classes[cls]).all()
+        else:
+            query_result = []
+            for clss in classes.values():
+                query_result.extend(self.__session.query(clss).all())
+        for obj in query_result:
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            new_dict[key] = obj
+        return new_dict
 
     def new(self, obj):
         """Add the object to the current database session"""
@@ -62,7 +65,7 @@ class DBStorage:
 
     def delete(self, obj=None):
         """Delete from the current database session obj if not None"""
-        if obj is not None:
+        if obj:
             self.__session.delete(obj)
 
     def reload(self):
@@ -70,7 +73,7 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
-        self.__session = Session
+        self.__session = Session()
 
     def close(self):
         """Call remove() method on the private session attribute"""
@@ -85,9 +88,9 @@ class DBStorage:
         Returns:
             The object based on the class and its ID, or None if not found
         """
-        if cls is None or id is None:
-            return None
-        return self.__session.query(cls).filter_by(id=id).first()
+        if cls and id:
+            return self.__session.query(classes[cls]).filter_by(id=id).first()
+        return None
 
     def count(self, cls=None):
         """
@@ -98,7 +101,10 @@ class DBStorage:
             The number of objects in storage matching the given class.
             If no class is passed, returns the count of all objects in storage.
         """
-        if cls is None:
-            return self.__session.query(Base).count()
+        if cls:
+            return self.__session.query(classes[cls]).count()
         else:
-            return self.__session.query(cls).count()
+            total_count = 0
+            for clss in classes.values():
+                total_count += self.__session.query(clss).count()
+            return total_count
