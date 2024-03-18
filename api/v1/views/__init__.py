@@ -1,14 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
-Package initializer for views of version 1 of the API.
+Package initializer for views
 """
+
 from flask import Blueprint
 
 app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
 
-# Circular import is avoided by importing at the end
 from api.v1.views.index import *
 from api.v1.views.states import *
 from api.v1.views.cities import *
-from api.v1.views.amenities import *  # Add this line to import the amenities view
-from api.v1.views.users import *  # Assuming you've added the users view as well
+from api.v1.views.amenities import *
+from api.v1.views.users import *
+from api.v1.views.places import *  # Add this line to import the places view
