@@ -3,7 +3,8 @@
 Main module to run version 1 of the API.
 """
 import os
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.exceptions import NotFound
 from api.v1.views import app_views
 from models import storage
 
@@ -16,6 +17,12 @@ app.register_blueprint(app_views)
 def teardown_appcontext(exception):
     """Close storage."""
     storage.close()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handler for 404 errors."""
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
