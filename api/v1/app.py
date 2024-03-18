@@ -7,11 +7,14 @@ from flask import Flask, jsonify
 from werkzeug.exceptions import NotFound
 from api.v1.views import app_views
 from models import storage
+from flask_cors import CORS  # Import CORS module
 
 app = Flask(__name__)
 
 app.register_blueprint(app_views)
 
+# Configure CORS
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.teardown_appcontext
 def teardown_appcontext(exception):
