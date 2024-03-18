@@ -1,2 +1,4 @@
-#!/usr/bin/python3
-"""Initializes the API package."""
+#!/usr/bin/env python3
+"""
+Package initializer for version 1 of the API.
+"""

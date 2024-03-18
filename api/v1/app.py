@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""
+Main module to run version 1 of the API.
+"""
 import os
 from flask import Flask
 from api.v1.views import app_views
